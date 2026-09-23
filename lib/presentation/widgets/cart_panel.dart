@@ -53,7 +53,8 @@ class CartPanel extends ConsumerWidget {
               const Spacer(),
               if (cartItems.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
@@ -125,9 +126,11 @@ class CartPanel extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                _summaryRow('Subtotal', formatter.format(cartSummary['subtotal']), context),
+                _summaryRow('Subtotal',
+                    formatter.format(cartSummary['subtotal']), context),
                 const SizedBox(height: 6),
-                _summaryRow('Impuesto (13%)', formatter.format(cartSummary['tax']), context),
+                _summaryRow('Impuesto (13%)',
+                    formatter.format(cartSummary['tax']), context),
                 const Divider(height: 20),
                 _summaryRow(
                   'Total',
@@ -210,14 +213,18 @@ class CartItemCard extends StatelessWidget {
 
   Color get _bgColor {
     switch (item.product.category) {
-      case ProductCategory.matcha:
+      case ProductCategory.meals:
         return const Color(0xFFDFF2D0);
-      case ProductCategory.smoothies:
+      case ProductCategory.drinks:
         return const Color(0xFFFFE4F0);
-      case ProductCategory.healthyJuices:
+      case ProductCategory.groceries:
         return const Color(0xFFFFF3CC);
-      case ProductCategory.coldCoffee:
+      case ProductCategory.desserts:
         return const Color(0xFFE8DDD0);
+      case ProductCategory.services:
+        return const Color(0xFFDDEBFF);
+      case ProductCategory.other:
+        return const Color(0xFFE8E8E8);
     }
   }
 

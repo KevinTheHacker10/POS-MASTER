@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:matcha_lovers_506/core/constants.dart';
 import 'package:matcha_lovers_506/domain/entities/product_entity.dart';
 import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
+import 'package:matcha_lovers_506/presentation/providers/business_settings_provider.dart';
 import 'package:matcha_lovers_506/presentation/providers/cart_provider.dart';
 import 'package:matcha_lovers_506/presentation/providers/product_provider.dart';
 import 'package:matcha_lovers_506/presentation/widgets/cart_panel.dart';
@@ -19,7 +20,7 @@ class PosScreen extends ConsumerStatefulWidget {
 }
 
 class _PosScreenState extends ConsumerState<PosScreen> {
-  ProductCategory _selectedCategory = ProductCategory.matcha;
+  ProductCategory _selectedCategory = ProductCategory.meals;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -83,12 +84,17 @@ class _PosScreenState extends ConsumerState<PosScreen> {
         final filters = ref.read(productFilterProvider);
         final productsAsync = ref.read(productProvider);
         final items = productsAsync.maybeWhen(
-          data: (list) => list.where((p) => p.category == _selectedCategory).toList(),
+          data: (list) =>
+              list.where((p) => p.category == _selectedCategory).toList(),
           orElse: () => <ProductEntity>[],
         );
 
-        double minPrice = items.isEmpty ? 0 : items.map((e) => e.price).reduce((a, b) => a < b ? a : b);
-        double maxPrice = items.isEmpty ? 0 : items.map((e) => e.price).reduce((a, b) => a > b ? a : b);
+        double minPrice = items.isEmpty
+            ? 0
+            : items.map((e) => e.price).reduce((a, b) => a < b ? a : b);
+        double maxPrice = items.isEmpty
+            ? 0
+            : items.map((e) => e.price).reduce((a, b) => a > b ? a : b);
 
         double currentMin = filters.minPrice ?? minPrice;
         double currentMax = filters.maxPrice ?? maxPrice;
@@ -112,14 +118,17 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      Icon(Icons.tune, color: Theme.of(context).colorScheme.primary),
+                      Icon(Icons.tune,
+                          color: Theme.of(context).colorScheme.primary),
                       const SizedBox(width: 8),
-                      Text('Rango de precio', style: context.textStyles.titleMedium),
+                      Text('Rango de precio',
+                          style: context.textStyles.titleMedium),
                     ],
                   ),
                   const SizedBox(height: 8),
                   if (items.isEmpty)
-                    Text('Sin productos para filtrar', style: context.textStyles.bodyMedium)
+                    Text('Sin productos para filtrar',
+                        style: context.textStyles.bodyMedium)
                   else ...[
                     RangeSlider(
                       values: RangeValues(currentMin, currentMax),
@@ -148,9 +157,11 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      Icon(Icons.sort, color: Theme.of(context).colorScheme.primary),
+                      Icon(Icons.sort,
+                          color: Theme.of(context).colorScheme.primary),
                       const SizedBox(width: 8),
-                      Text('Ordenar por', style: context.textStyles.titleMedium),
+                      Text('Ordenar por',
+                          style: context.textStyles.titleMedium),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -160,36 +171,43 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                       ChoiceChip(
                         label: const Text('Relevancia'),
                         selected: currentSort == ProductSort.relevance,
-                        onSelected: (_) => setModalState(() => currentSort = ProductSort.relevance),
+                        onSelected: (_) => setModalState(
+                            () => currentSort = ProductSort.relevance),
                       ),
                       ChoiceChip(
                         label: const Text('Precio ↑'),
                         selected: currentSort == ProductSort.priceAsc,
-                        onSelected: (_) => setModalState(() => currentSort = ProductSort.priceAsc),
+                        onSelected: (_) => setModalState(
+                            () => currentSort = ProductSort.priceAsc),
                       ),
                       ChoiceChip(
                         label: const Text('Precio ↓'),
                         selected: currentSort == ProductSort.priceDesc,
-                        onSelected: (_) => setModalState(() => currentSort = ProductSort.priceDesc),
+                        onSelected: (_) => setModalState(
+                            () => currentSort = ProductSort.priceDesc),
                       ),
                       ChoiceChip(
                         label: const Text('Nombre A-Z'),
                         selected: currentSort == ProductSort.nameAsc,
-                        onSelected: (_) => setModalState(() => currentSort = ProductSort.nameAsc),
+                        onSelected: (_) => setModalState(
+                            () => currentSort = ProductSort.nameAsc),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary),
+                      Icon(Icons.check_circle,
+                          color: Theme.of(context).colorScheme.primary),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Text('Mostrar solo disponibles', style: context.textStyles.titleMedium),
+                        child: Text('Mostrar solo disponibles',
+                            style: context.textStyles.titleMedium),
                       ),
                       Switch(
                         value: onlyAvailable,
-                        onChanged: (v) => setModalState(() => onlyAvailable = v),
+                        onChanged: (v) =>
+                            setModalState(() => onlyAvailable = v),
                       ),
                     ],
                   ),
@@ -238,7 +256,8 @@ class _PosScreenState extends ConsumerState<PosScreen> {
   @override
   Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserProvider);
-    final products = ref.watch(filteredProductsByCategoryProvider(_selectedCategory));
+    final products =
+        ref.watch(filteredProductsByCategoryProvider(_selectedCategory));
     final filters = ref.watch(productFilterProvider);
     final cart = ref.watch(cartProvider);
     final isMobile = Responsive.isMobile(context);
@@ -300,15 +319,18 @@ class _PosScreenState extends ConsumerState<PosScreen> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context, currentUser) {
     final isDesktop = Responsive.isDesktop(context);
+    final businessName = ref.watch(businessSettingsProvider).businessName;
 
     return AppBar(
-      title: Text(AppConstants.appName),
+      title: Text(businessName.isEmpty ? AppConstants.appName : businessName),
       actions: [
         if (currentUser?.role == UserRole.admin)
           isDesktop
               ? TextButton.icon(
-                  icon: const Icon(Icons.bar_chart_rounded, color: Colors.white),
-                  label: const Text('Admin', style: TextStyle(color: Colors.white)),
+                  icon:
+                      const Icon(Icons.bar_chart_rounded, color: Colors.white),
+                  label: const Text('Admin',
+                      style: TextStyle(color: Colors.white)),
                   onPressed: () => context.push('/admin'),
                 )
               : IconButton(
@@ -316,17 +338,19 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                   onPressed: () => context.push('/admin'),
                   tooltip: 'Panel Admin',
                 ),
-        isDesktop
-            ? TextButton.icon(
-                icon: const Icon(Icons.history, color: Colors.white),
-                label: const Text('Historial', style: TextStyle(color: Colors.white)),
-                onPressed: () => context.push('/orders'),
-              )
-            : IconButton(
-                icon: const Icon(Icons.history),
-                onPressed: () => context.push('/orders'),
-                tooltip: 'Historial',
-              ),
+        if (currentUser?.role != UserRole.customer)
+          isDesktop
+              ? TextButton.icon(
+                  icon: const Icon(Icons.history, color: Colors.white),
+                  label: const Text('Historial',
+                      style: TextStyle(color: Colors.white)),
+                  onPressed: () => context.push('/orders'),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.history),
+                  onPressed: () => context.push('/orders'),
+                  tooltip: 'Historial',
+                ),
         if (isDesktop && currentUser != null)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -334,11 +358,13 @@ class _PosScreenState extends ConsumerState<PosScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.account_circle, color: Colors.white, size: 20),
+                  const Icon(Icons.account_circle,
+                      color: Colors.white, size: 20),
                   const SizedBox(width: 4),
                   Text(
                     currentUser.fullName,
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -410,25 +436,33 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .outline
+                        .withValues(alpha: 0.2),
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .outline
+                        .withValues(alpha: 0.2),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+                  borderSide:
+                      BorderSide(color: Theme.of(context).colorScheme.primary),
                 ),
               ),
             ),
           ),
           const SizedBox(width: 12),
           OutlinedButton.icon(
-            icon: Icon(Icons.tune, color: Theme.of(context).colorScheme.primary),
+            icon:
+                Icon(Icons.tune, color: Theme.of(context).colorScheme.primary),
             label: Text(
               'Filtros',
               style: context.textStyles.labelLarge?.copyWith(
@@ -438,7 +472,8 @@ class _PosScreenState extends ConsumerState<PosScreen> {
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Theme.of(context).colorScheme.primary),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
             ),
             onPressed: _openFiltersSheet,
           ),
@@ -454,7 +489,8 @@ class _PosScreenState extends ConsumerState<PosScreen> {
           filters.hasAnyFilter
               ? 'Sin resultados. Ajusta la búsqueda o los filtros'
               : 'No hay productos disponibles',
-          style: context.textStyles.bodyLarge?.copyWith(color: AppColors.oliveGreen),
+          style: context.textStyles.bodyLarge
+              ?.copyWith(color: AppColors.oliveGreen),
           textAlign: TextAlign.center,
         ),
       );
@@ -531,7 +567,8 @@ class CartFab extends StatelessWidget {
       ),
       label: Text(
         itemCount > 0 ? 'Carrito ($itemCount)' : 'Ver carrito',
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        style:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
       ),
     );
   }

@@ -1,30 +1,26 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:matcha_lovers_506/main.dart';
+import 'package:matcha_lovers_506/core/constants.dart';
+import 'package:matcha_lovers_506/domain/entities/business_settings.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('public product identity is POS-MASTER', () {
+    expect(AppConstants.appName, 'POS-MASTER');
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('catalog exposes generic multi-business categories', () {
+    expect(ProductCategory.values, contains(ProductCategory.meals));
+    expect(ProductCategory.values, contains(ProductCategory.groceries));
+    expect(ProductCategory.values, contains(ProductCategory.services));
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  test('setup supports the requested business types', () {
+    expect(BusinessType.values, contains(BusinessType.restaurant));
+    expect(BusinessType.values, contains(BusinessType.soda));
+    expect(BusinessType.values, contains(BusinessType.serviceWindow));
+    expect(BusinessType.values, contains(BusinessType.grocery));
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('self-service is a distinct application role', () {
+    expect(UserRole.customer.displayName, 'Cliente autoservicio');
   });
 }

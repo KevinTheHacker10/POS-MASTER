@@ -53,11 +53,24 @@ class _AdminScreenState extends ConsumerState<AdminScreen>
           onPressed: () => context.pop(),
         ),
         actions: [
-          TextButton.icon(
-            onPressed: () => context.push('/admin/products'),
-            icon: const Icon(Icons.inventory_2, color: Colors.white),
-            label: const Text('Productos', style: TextStyle(color: Colors.white)),
+          IconButton(
+            tooltip: 'Configurar empresa',
+            onPressed: () => context.push('/admin/settings'),
+            icon: const Icon(Icons.settings),
           ),
+          if (Responsive.isMobile(context))
+            IconButton(
+              tooltip: 'Productos',
+              onPressed: () => context.push('/admin/products'),
+              icon: const Icon(Icons.inventory_2),
+            )
+          else
+            TextButton.icon(
+              onPressed: () => context.push('/admin/products'),
+              icon: const Icon(Icons.inventory_2, color: Colors.white),
+              label: const Text('Productos',
+                  style: TextStyle(color: Colors.white)),
+            ),
           const SizedBox(width: 8),
         ],
         bottom: TabBar(
@@ -103,7 +116,8 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
       case _DateRange.today:
         return DateTimeRange(start: today, end: now);
       case _DateRange.week:
-        return DateTimeRange(start: today.subtract(const Duration(days: 7)), end: now);
+        return DateTimeRange(
+            start: today.subtract(const Duration(days: 7)), end: now);
       case _DateRange.month:
         return DateTimeRange(start: DateTime(now.year, now.month, 1), end: now);
       case _DateRange.all:
@@ -118,7 +132,8 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
   Widget build(BuildContext context) {
     final ordersAsync = ref.watch(orderProvider);
     final range = _getRange();
-    final formatter = NumberFormat.currency(symbol: AppConstants.currency, decimalDigits: 0);
+    final formatter =
+        NumberFormat.currency(symbol: AppConstants.currency, decimalDigits: 0);
     final isMobile = Responsive.isMobile(context);
 
     return ordersAsync.when(
@@ -134,7 +149,8 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
 
         final totalVentas = orders.fold<double>(0, (s, o) => s + o.total);
         final totalOrdenes = orders.length;
-        final ticketPromedio = totalOrdenes > 0 ? totalVentas / totalOrdenes : 0.0;
+        final ticketPromedio =
+            totalOrdenes > 0 ? totalVentas / totalOrdenes : 0.0;
         final totalImpuestos = orders.fold<double>(0, (s, o) => s + o.tax);
 
         // Top productos
@@ -200,17 +216,26 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
               isMobile
                   ? Column(
                       children: [
-                        _KpiCard('Ventas Totales', formatter.format(totalVentas),
-                            Icons.attach_money, AppColors.oliveGreen),
+                        _KpiCard(
+                            'Ventas Totales',
+                            formatter.format(totalVentas),
+                            Icons.attach_money,
+                            AppColors.oliveGreen),
                         const SizedBox(height: 10),
-                        _KpiCard('Órdenes', '$totalOrdenes',
-                            Icons.receipt_long, AppColors.peach),
+                        _KpiCard('Órdenes', '$totalOrdenes', Icons.receipt_long,
+                            AppColors.peach),
                         const SizedBox(height: 10),
-                        _KpiCard('Ticket Promedio', formatter.format(ticketPromedio),
-                            Icons.trending_up, AppColors.amber),
+                        _KpiCard(
+                            'Ticket Promedio',
+                            formatter.format(ticketPromedio),
+                            Icons.trending_up,
+                            AppColors.amber),
                         const SizedBox(height: 10),
-                        _KpiCard('Impuestos (13%)', formatter.format(totalImpuestos),
-                            Icons.account_balance, AppColors.coral),
+                        _KpiCard(
+                            'Impuestos (13%)',
+                            formatter.format(totalImpuestos),
+                            Icons.account_balance,
+                            AppColors.coral),
                       ],
                     )
                   : GridView.count(
@@ -221,14 +246,23 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
                       mainAxisSpacing: 12,
                       childAspectRatio: 1.6,
                       children: [
-                        _KpiCard('Ventas Totales', formatter.format(totalVentas),
-                            Icons.attach_money, AppColors.oliveGreen),
-                        _KpiCard('Órdenes', '$totalOrdenes',
-                            Icons.receipt_long, AppColors.peach),
-                        _KpiCard('Ticket Promedio', formatter.format(ticketPromedio),
-                            Icons.trending_up, AppColors.amber),
-                        _KpiCard('Impuestos (13%)', formatter.format(totalImpuestos),
-                            Icons.account_balance, AppColors.coral),
+                        _KpiCard(
+                            'Ventas Totales',
+                            formatter.format(totalVentas),
+                            Icons.attach_money,
+                            AppColors.oliveGreen),
+                        _KpiCard('Órdenes', '$totalOrdenes', Icons.receipt_long,
+                            AppColors.peach),
+                        _KpiCard(
+                            'Ticket Promedio',
+                            formatter.format(ticketPromedio),
+                            Icons.trending_up,
+                            AppColors.amber),
+                        _KpiCard(
+                            'Impuestos (13%)',
+                            formatter.format(totalImpuestos),
+                            Icons.account_balance,
+                            AppColors.coral),
                       ],
                     ),
 
@@ -240,33 +274,57 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
                 icon: Icons.payment,
                 child: orders.isEmpty
                     ? _emptyState()
-                    : Row(
-                        children: [
-                          Expanded(
-                            child: _PaymentMethodBar(
-                              label: 'Efectivo',
-                              icon: Icons.money,
-                              count: cashCount,
-                              amount: cashTotal,
-                              total: totalVentas,
-                              color: AppColors.oliveGreen,
-                              formatter: formatter,
-                            ),
+                    : isMobile
+                        ? Column(
+                            children: [
+                              _PaymentMethodBar(
+                                label: 'Efectivo',
+                                icon: Icons.money,
+                                count: cashCount,
+                                amount: cashTotal,
+                                total: totalVentas,
+                                color: AppColors.oliveGreen,
+                                formatter: formatter,
+                              ),
+                              const SizedBox(height: 16),
+                              _PaymentMethodBar(
+                                label: 'Tarjeta',
+                                icon: Icons.credit_card,
+                                count: cardCount,
+                                amount: cardTotal,
+                                total: totalVentas,
+                                color: AppColors.amber,
+                                formatter: formatter,
+                              ),
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              Expanded(
+                                child: _PaymentMethodBar(
+                                  label: 'Efectivo',
+                                  icon: Icons.money,
+                                  count: cashCount,
+                                  amount: cashTotal,
+                                  total: totalVentas,
+                                  color: AppColors.oliveGreen,
+                                  formatter: formatter,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _PaymentMethodBar(
+                                  label: 'Tarjeta',
+                                  icon: Icons.credit_card,
+                                  count: cardCount,
+                                  amount: cardTotal,
+                                  total: totalVentas,
+                                  color: AppColors.amber,
+                                  formatter: formatter,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _PaymentMethodBar(
-                              label: 'Tarjeta',
-                              icon: Icons.credit_card,
-                              count: cardCount,
-                              amount: cardTotal,
-                              total: totalVentas,
-                              color: AppColors.amber,
-                              formatter: formatter,
-                            ),
-                          ),
-                        ],
-                      ),
               ),
 
               const SizedBox(height: 16),
@@ -348,7 +406,11 @@ class _UsersTabState extends ConsumerState<_UsersTab> {
   Future<void> _loadUsers() async {
     final repo = ref.read(authRepositoryProvider);
     final users = await repo.getAllUsers();
-    if (mounted) setState(() { _users = users; _loading = false; });
+    if (mounted)
+      setState(() {
+        _users = users;
+        _loading = false;
+      });
   }
 
   void _openUserEditor({UserEntity? user}) {
@@ -361,7 +423,8 @@ class _UsersTabState extends ConsumerState<_UsersTab> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: _UserEditorSheet(
           initial: user,
           onSaved: _loadUsers,
@@ -409,30 +472,62 @@ class _UsersTabState extends ConsumerState<_UsersTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Stats
-          Row(
-            children: [
-              _KpiCard(
-                'Total Usuarios',
-                '${_users.length}',
-                Icons.people,
-                AppColors.oliveGreen,
-              ),
-              const SizedBox(width: 12),
-              _KpiCard(
-                'Administradores',
-                '${_users.where((u) => u.role == UserRole.admin).length}',
-                Icons.admin_panel_settings,
-                AppColors.amber,
-              ),
-              const SizedBox(width: 12),
-              _KpiCard(
-                'Meseros',
-                '${_users.where((u) => u.role == UserRole.waiter).length}',
-                Icons.room_service,
-                AppColors.peach,
-              ),
-            ],
-          ),
+          if (isMobile)
+            Column(
+              children: [
+                _KpiCard(
+                  'Total Usuarios',
+                  '${_users.length}',
+                  Icons.people,
+                  AppColors.oliveGreen,
+                ),
+                const SizedBox(height: 8),
+                _KpiCard(
+                  'Administradores',
+                  '${_users.where((u) => u.role == UserRole.admin).length}',
+                  Icons.admin_panel_settings,
+                  AppColors.amber,
+                ),
+                const SizedBox(height: 8),
+                _KpiCard(
+                  'Meseros',
+                  '${_users.where((u) => u.role == UserRole.waiter).length}',
+                  Icons.room_service,
+                  AppColors.peach,
+                ),
+              ],
+            )
+          else
+            Row(
+              children: [
+                Expanded(
+                  child: _KpiCard(
+                    'Total Usuarios',
+                    '${_users.length}',
+                    Icons.people,
+                    AppColors.oliveGreen,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _KpiCard(
+                    'Administradores',
+                    '${_users.where((u) => u.role == UserRole.admin).length}',
+                    Icons.admin_panel_settings,
+                    AppColors.amber,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _KpiCard(
+                    'Meseros',
+                    '${_users.where((u) => u.role == UserRole.waiter).length}',
+                    Icons.room_service,
+                    AppColors.peach,
+                  ),
+                ),
+              ],
+            ),
           const SizedBox(height: 16),
 
           // Lista de usuarios
@@ -441,7 +536,8 @@ class _UsersTabState extends ConsumerState<_UsersTab> {
                 ? Center(
                     child: Text(
                       'No hay usuarios registrados',
-                      style: context.textStyles.bodyLarge?.withColor(AppColors.oliveGreen),
+                      style: context.textStyles.bodyLarge
+                          ?.withColor(AppColors.oliveGreen),
                     ),
                   )
                 : ListView.separated(
@@ -460,7 +556,9 @@ class _UsersTabState extends ConsumerState<_UsersTab> {
                                 ? AppColors.oliveGreen.withValues(alpha: 0.15)
                                 : AppColors.peach.withValues(alpha: 0.3),
                             child: Text(
-                              u.fullName.isNotEmpty ? u.fullName[0].toUpperCase() : '?',
+                              u.fullName.isNotEmpty
+                                  ? u.fullName[0].toUpperCase()
+                                  : '?',
                               style: TextStyle(
                                 color: u.role == UserRole.admin
                                     ? AppColors.oliveGreen
@@ -469,7 +567,8 @@ class _UsersTabState extends ConsumerState<_UsersTab> {
                               ),
                             ),
                           ),
-                          title: Text(u.fullName, style: context.textStyles.titleSmall?.semiBold),
+                          title: Text(u.fullName,
+                              style: context.textStyles.titleSmall?.semiBold),
                           subtitle: Text('@${u.username}',
                               style: context.textStyles.bodySmall
                                   ?.withColor(Colors.grey[600]!)),
@@ -481,7 +580,8 @@ class _UsersTabState extends ConsumerState<_UsersTab> {
                                     horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: u.role == UserRole.admin
-                                      ? AppColors.oliveGreen.withValues(alpha: 0.1)
+                                      ? AppColors.oliveGreen
+                                          .withValues(alpha: 0.1)
                                       : AppColors.peach.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
@@ -497,11 +597,13 @@ class _UsersTabState extends ConsumerState<_UsersTab> {
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.edit, color: AppColors.oliveGreen, size: 20),
+                                icon: const Icon(Icons.edit,
+                                    color: AppColors.oliveGreen, size: 20),
                                 onPressed: () => _openUserEditor(user: u),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete, color: AppColors.coral, size: 20),
+                                icon: const Icon(Icons.delete,
+                                    color: AppColors.coral, size: 20),
                                 onPressed: () => _deleteUser(u),
                               ),
                             ],
@@ -626,10 +728,12 @@ class _UserEditorSheetState extends ConsumerState<_UserEditorSheet> {
               controller: _passCtrl,
               obscureText: _obscure,
               decoration: InputDecoration(
-                labelText: isEdit ? 'Nueva contraseña (opcional)' : 'Contraseña',
+                labelText:
+                    isEdit ? 'Nueva contraseña (opcional)' : 'Contraseña',
                 prefixIcon: const Icon(Icons.lock),
                 suffixIcon: IconButton(
-                  icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
+                  icon:
+                      Icon(_obscure ? Icons.visibility_off : Icons.visibility),
                   onPressed: () => setState(() => _obscure = !_obscure),
                 ),
               ),
@@ -648,7 +752,8 @@ class _UserEditorSheetState extends ConsumerState<_UserEditorSheet> {
                 prefixIcon: Icon(Icons.badge),
               ),
               items: UserRole.values
-                  .map((r) => DropdownMenuItem(value: r, child: Text(r.displayName)))
+                  .map((r) =>
+                      DropdownMenuItem(value: r, child: Text(r.displayName)))
                   .toList(),
               onChanged: (v) => setState(() => _role = v ?? UserRole.waiter),
             ),
@@ -733,40 +838,39 @@ class _KpiCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(icon, color: color, size: 20),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(
-                value,
-                style: context.textStyles.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: color,
+                  child: Icon(icon, color: color, size: 20),
                 ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              value,
+              style: context.textStyles.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: color,
               ),
-              Text(
-                label,
-                style: context.textStyles.labelSmall?.withColor(Colors.grey[600]!),
-              ),
-            ],
-          ),
+            ),
+            Text(
+              label,
+              style:
+                  context.textStyles.labelSmall?.withColor(Colors.grey[600]!),
+            ),
+          ],
         ),
       ),
     );
@@ -778,7 +882,8 @@ class _SectionCard extends StatelessWidget {
   final IconData icon;
   final Widget child;
 
-  const _SectionCard({required this.title, required this.icon, required this.child});
+  const _SectionCard(
+      {required this.title, required this.icon, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -835,7 +940,9 @@ class _PaymentMethodBar extends StatelessWidget {
             const SizedBox(width: 6),
             Text(label, style: context.textStyles.titleSmall?.semiBold),
             const Spacer(),
-            Text('$count órdenes', style: context.textStyles.labelSmall?.withColor(Colors.grey[600]!)),
+            Text('$count órdenes',
+                style: context.textStyles.labelSmall
+                    ?.withColor(Colors.grey[600]!)),
           ],
         ),
         const SizedBox(height: 6),
@@ -908,7 +1015,8 @@ class _TopProductRow extends StatelessWidget {
                     ),
                     Text(
                       '${stat.qty} uds · ${formatter.format(stat.revenue)}',
-                      style: context.textStyles.labelSmall?.withColor(Colors.grey[600]!),
+                      style: context.textStyles.labelSmall
+                          ?.withColor(Colors.grey[600]!),
                     ),
                   ],
                 ),
@@ -918,8 +1026,10 @@ class _TopProductRow extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: pct,
                     minHeight: 6,
-                    backgroundColor: AppColors.oliveGreen.withValues(alpha: 0.1),
-                    valueColor: const AlwaysStoppedAnimation(AppColors.oliveGreen),
+                    backgroundColor:
+                        AppColors.oliveGreen.withValues(alpha: 0.1),
+                    valueColor:
+                        const AlwaysStoppedAnimation(AppColors.oliveGreen),
                   ),
                 ),
               ],
@@ -963,17 +1073,20 @@ class _OrderRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(order.userName, style: context.textStyles.bodyMedium?.semiBold),
+                Text(order.userName,
+                    style: context.textStyles.bodyMedium?.semiBold),
                 Text(
                   '${order.items.length} ítems · $timeStr',
-                  style: context.textStyles.labelSmall?.withColor(Colors.grey[500]!),
+                  style: context.textStyles.labelSmall
+                      ?.withColor(Colors.grey[500]!),
                 ),
               ],
             ),
           ),
           Text(
             formatter.format(order.total),
-            style: context.textStyles.titleSmall?.bold.withColor(AppColors.oliveGreen),
+            style: context.textStyles.titleSmall?.bold
+                .withColor(AppColors.oliveGreen),
           ),
         ],
       ),
@@ -985,5 +1098,6 @@ class _ProductStat {
   final String name;
   final int qty;
   final double revenue;
-  const _ProductStat({required this.name, required this.qty, required this.revenue});
+  const _ProductStat(
+      {required this.name, required this.qty, required this.revenue});
 }

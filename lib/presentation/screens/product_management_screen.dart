@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:matcha_lovers_506/core/constants.dart';
+import 'package:matcha_lovers_506/core/responsive/responsive_helper.dart';
 import 'package:matcha_lovers_506/domain/entities/product_entity.dart';
 import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
 import 'package:matcha_lovers_506/presentation/providers/product_provider.dart';
@@ -37,8 +38,8 @@ class _ProductManagementScreenState
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => Padding(
-        padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: _ProductEditorSheet(initial: product),
       ),
     );
@@ -84,80 +85,90 @@ class _ProductManagementScreenState
             Card(
               child: Padding(
                 padding: AppSpacing.paddingMd,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: TextField(
-                        controller: _searchCtrl,
-                        onChanged: (_) => setState(() {}),
-                        decoration: InputDecoration(
-                          hintText: 'Buscar por nombre o descripción…',
-                          prefixIcon: const Icon(Icons.search),
-                          suffixIcon: _searchCtrl.text.isNotEmpty
-                              ? IconButton(
-                                  tooltip: 'Limpiar',
-                                  icon: const Icon(Icons.close),
-                                  onPressed: () {
-                                    _searchCtrl.clear();
-                                    setState(() {});
-                                  },
-                                )
-                              : null,
-                          filled: true,
-                          fillColor: Theme.of(context).colorScheme.surface,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .outline
-                                    .withValues(alpha: 0.2)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .outline
-                                    .withValues(alpha: 0.2)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary),
-                          ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final compact = constraints.maxWidth < 620;
+                    final search = TextField(
+                      controller: _searchCtrl,
+                      onChanged: (_) => setState(() {}),
+                      decoration: InputDecoration(
+                        hintText: 'Buscar por nombre o descripción…',
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon: _searchCtrl.text.isNotEmpty
+                            ? IconButton(
+                                tooltip: 'Limpiar',
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  _searchCtrl.clear();
+                                  setState(() {});
+                                },
+                              )
+                            : null,
+                        filled: true,
+                        fillColor: Theme.of(context).colorScheme.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .outline
+                                  .withValues(alpha: 0.2)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .outline
+                                  .withValues(alpha: 0.2)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.primary),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: DropdownButtonFormField<ProductCategory?>(
-                        value: _categoryFilter,
-                        items: [
-                          const DropdownMenuItem<ProductCategory?>(
-                            value: null,
-                            child: Text('Todas'),
-                          ),
-                          ...ProductCategory.values.map((c) =>
-                              DropdownMenuItem<ProductCategory?>(
-                                value: c,
-                                child: Text('${c.icon} ${c.displayName}'),
-                              )),
+                    );
+                    final category = DropdownButtonFormField<ProductCategory?>(
+                      value: _categoryFilter,
+                      items: [
+                        const DropdownMenuItem<ProductCategory?>(
+                          value: null,
+                          child: Text('Todas'),
+                        ),
+                        ...ProductCategory.values
+                            .map((c) => DropdownMenuItem<ProductCategory?>(
+                                  value: c,
+                                  child: Text('${c.icon} ${c.displayName}'),
+                                )),
+                      ],
+                      onChanged: (v) => setState(() => _categoryFilter = v),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.category),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 14),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                        labelText: 'Categoría',
+                      ),
+                    );
+                    if (compact) {
+                      return Column(
+                        children: [
+                          search,
+                          const SizedBox(height: 12),
+                          category,
                         ],
-                        onChanged: (v) =>
-                            setState(() => _categoryFilter = v),
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.category),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 14),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16)),
-                          labelText: 'Categoría',
-                        ),
-                      ),
-                    ),
-                  ],
+                      );
+                    }
+                    return Row(
+                      children: [
+                        Expanded(flex: 3, child: search),
+                        const SizedBox(width: 12),
+                        Expanded(child: category),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -177,9 +188,7 @@ class _ProductManagementScreenState
                     items = items
                         .where((e) =>
                             e.name.toLowerCase().contains(query) ||
-                            (e.description ?? '')
-                                .toLowerCase()
-                                .contains(query))
+                            (e.description ?? '').toLowerCase().contains(query))
                         .toList();
                   }
 
@@ -198,6 +207,22 @@ class _ProductManagementScreenState
                     separatorBuilder: (_, __) => const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final p = items[index];
+                      if (Responsive.isMobile(context)) {
+                        return _MobileProductTile(
+                          product: p,
+                          onEdit: () => _openEditor(product: p),
+                          onAvailabilityChanged: (value) async {
+                            await ref
+                                .read(productProvider.notifier)
+                                .updateProduct(
+                                  p.copyWith(
+                                    isAvailable: value,
+                                    updatedAt: DateTime.now(),
+                                  ),
+                                );
+                          },
+                        );
+                      }
                       return Card(
                         child: Padding(
                           padding: AppSpacing.paddingMd,
@@ -222,8 +247,7 @@ class _ProductManagementScreenState
                               // ── Info ──────────────────────────────
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       children: [
@@ -246,8 +270,7 @@ class _ProductManagementScreenState
                                           ),
                                           child: Text(
                                             p.category.displayName,
-                                            style: context.textStyles
-                                                .labelSmall
+                                            style: context.textStyles.labelSmall
                                                 ?.withColor(Theme.of(context)
                                                     .colorScheme
                                                     .onPrimaryContainer),
@@ -266,8 +289,7 @@ class _ProductManagementScreenState
                                     // Muestra URL si tiene imagen
                                     if (p.hasCustomImage)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 2),
+                                        padding: const EdgeInsets.only(top: 2),
                                         child: Row(
                                           children: [
                                             Icon(Icons.image,
@@ -277,12 +299,11 @@ class _ProductManagementScreenState
                                             Expanded(
                                               child: Text(
                                                 p.imageUrl!,
-                                                style: context.textStyles
-                                                    .labelSmall
-                                                    ?.withColor(AppColors
-                                                        .oliveGreen),
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                style: context
+                                                    .textStyles.labelSmall
+                                                    ?.withColor(
+                                                        AppColors.oliveGreen),
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                           ],
@@ -296,8 +317,7 @@ class _ProductManagementScreenState
                               // ── Precio + toggle + acciones ────────
                               Text(
                                 '${AppConstants.currency}${p.price.toStringAsFixed(0)}',
-                                style:
-                                    context.textStyles.titleMedium?.bold,
+                                style: context.textStyles.titleMedium?.bold,
                               ),
                               const SizedBox(width: 12),
                               Row(
@@ -334,8 +354,7 @@ class _ProductManagementScreenState
                                 icon: const Icon(Icons.delete,
                                     color: AppColors.coral),
                                 onPressed: () async {
-                                  final confirmed =
-                                      await showDialog<bool>(
+                                  final confirmed = await showDialog<bool>(
                                     context: context,
                                     builder: (ctx) => AlertDialog(
                                       title: const Text('Eliminar producto'),
@@ -370,8 +389,7 @@ class _ProductManagementScreenState
                     },
                   );
                 },
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
+                loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Center(child: Text('Error: $e')),
               ),
             ),
@@ -388,14 +406,18 @@ class _ProductManagementScreenState
 
   Color _bgColorFor(ProductCategory cat) {
     switch (cat) {
-      case ProductCategory.matcha:
+      case ProductCategory.meals:
         return const Color(0xFFDFF2D0);
-      case ProductCategory.smoothies:
+      case ProductCategory.drinks:
         return const Color(0xFFFFE4F0);
-      case ProductCategory.healthyJuices:
+      case ProductCategory.groceries:
         return const Color(0xFFFFF3CC);
-      case ProductCategory.coldCoffee:
+      case ProductCategory.desserts:
         return const Color(0xFFE8DDD0);
+      case ProductCategory.services:
+        return const Color(0xFFDDEBFF);
+      case ProductCategory.other:
+        return const Color(0xFFE8E8E8);
     }
   }
 }
@@ -403,6 +425,88 @@ class _ProductManagementScreenState
 // =============================================================================
 // EDITOR DE PRODUCTO — incluye campo de imagen
 // =============================================================================
+
+class _MobileProductTile extends StatelessWidget {
+  final ProductEntity product;
+  final VoidCallback onEdit;
+  final ValueChanged<bool> onAvailabilityChanged;
+
+  const _MobileProductTile({
+    required this.product,
+    required this.onEdit,
+    required this.onAvailabilityChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                SizedBox(
+                  width: 52,
+                  height: 52,
+                  child: ProductImage(
+                    product: product,
+                    bgColor: Theme.of(context).colorScheme.primaryContainer,
+                    emojiSize: 24,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textStyles.titleSmall?.semiBold,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        '${product.category.displayName} · ${AppConstants.currency}${product.price.toStringAsFixed(0)}',
+                        style: context.textStyles.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Editar',
+                  onPressed: onEdit,
+                  icon: const Icon(Icons.edit, color: AppColors.oliveGreen),
+                ),
+              ],
+            ),
+            const Divider(height: 20),
+            Row(
+              children: [
+                Icon(
+                  Icons.circle,
+                  size: 10,
+                  color: product.isAvailable ? Colors.green : Colors.redAccent,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                      product.isAvailable ? 'Disponible' : 'No disponible'),
+                ),
+                Switch(
+                  value: product.isAvailable,
+                  onChanged: onAvailabilityChanged,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _ProductEditorSheet extends ConsumerStatefulWidget {
   final ProductEntity? initial;
@@ -428,11 +532,9 @@ class _ProductEditorSheetState extends ConsumerState<_ProductEditorSheet> {
     _nameCtrl = TextEditingController(text: widget.initial?.name ?? '');
     _priceCtrl = TextEditingController(
         text: widget.initial?.price.toStringAsFixed(0) ?? '');
-    _descCtrl =
-        TextEditingController(text: widget.initial?.description ?? '');
-    _imageCtrl =
-        TextEditingController(text: widget.initial?.imageUrl ?? '');
-    _category = widget.initial?.category ?? ProductCategory.matcha;
+    _descCtrl = TextEditingController(text: widget.initial?.description ?? '');
+    _imageCtrl = TextEditingController(text: widget.initial?.imageUrl ?? '');
+    _category = widget.initial?.category ?? ProductCategory.meals;
     _available = widget.initial?.isAvailable ?? true;
   }
 
@@ -452,41 +554,43 @@ class _ProductEditorSheetState extends ConsumerState<_ProductEditorSheet> {
         price: 0,
         category: _category,
         description: null,
-        imageUrl: _imageCtrl.text.trim().isEmpty ? null : _imageCtrl.text.trim(),
+        imageUrl:
+            _imageCtrl.text.trim().isEmpty ? null : _imageCtrl.text.trim(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
   Color get _bgColor {
     switch (_category) {
-      case ProductCategory.matcha:
+      case ProductCategory.meals:
         return const Color(0xFFDFF2D0);
-      case ProductCategory.smoothies:
+      case ProductCategory.drinks:
         return const Color(0xFFFFE4F0);
-      case ProductCategory.healthyJuices:
+      case ProductCategory.groceries:
         return const Color(0xFFFFF3CC);
-      case ProductCategory.coldCoffee:
+      case ProductCategory.desserts:
         return const Color(0xFFE8DDD0);
+      case ProductCategory.services:
+        return const Color(0xFFDDEBFF);
+      case ProductCategory.other:
+        return const Color(0xFFE8E8E8);
     }
   }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final notifier = ref.read(productProvider.notifier);
-    final price =
-        double.tryParse(_priceCtrl.text.replaceAll(',', '.')) ?? 0;
-    final imageUrl = _imageCtrl.text.trim().isEmpty
-        ? null
-        : _imageCtrl.text.trim();
+    final price = double.tryParse(_priceCtrl.text.replaceAll(',', '.')) ?? 0;
+    final imageUrl =
+        _imageCtrl.text.trim().isEmpty ? null : _imageCtrl.text.trim();
 
     if (widget.initial == null) {
       await notifier.createProduct(
         name: _nameCtrl.text.trim(),
         price: price,
         category: _category,
-        description: _descCtrl.text.trim().isEmpty
-            ? null
-            : _descCtrl.text.trim(),
+        description:
+            _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
         imageUrl: imageUrl,
       );
     } else {
@@ -494,9 +598,8 @@ class _ProductEditorSheetState extends ConsumerState<_ProductEditorSheet> {
         name: _nameCtrl.text.trim(),
         price: price,
         category: _category,
-        description: _descCtrl.text.trim().isEmpty
-            ? null
-            : _descCtrl.text.trim(),
+        description:
+            _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
         isAvailable: _available,
         imageUrl: imageUrl,
         updatedAt: DateTime.now(),
@@ -576,8 +679,8 @@ class _ProductEditorSheetState extends ConsumerState<_ProductEditorSheet> {
                     : null,
                 helperText:
                     'Pegá una URL de imagen o escribí un emoji personalizado',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide(
@@ -600,9 +703,8 @@ class _ProductEditorSheetState extends ConsumerState<_ProductEditorSheet> {
                 prefixIcon: Icon(Icons.emoji_food_beverage),
               ),
               textInputAction: TextInputAction.next,
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'Ingrese un nombre'
-                  : null,
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Ingrese un nombre' : null,
             ),
             const SizedBox(height: 12),
 
@@ -616,8 +718,7 @@ class _ProductEditorSheetState extends ConsumerState<_ProductEditorSheet> {
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               validator: (v) {
-                final value =
-                    double.tryParse((v ?? '').replaceAll(',', '.'));
+                final value = double.tryParse((v ?? '').replaceAll(',', '.'));
                 if (value == null || value <= 0) {
                   return 'Ingrese un precio válido';
                 }
@@ -636,7 +737,7 @@ class _ProductEditorSheetState extends ConsumerState<_ProductEditorSheet> {
                       ))
                   .toList(),
               onChanged: (v) =>
-                  setState(() => _category = v ?? ProductCategory.matcha),
+                  setState(() => _category = v ?? ProductCategory.meals),
               decoration: const InputDecoration(
                 labelText: 'Categoría',
                 prefixIcon: Icon(Icons.category),

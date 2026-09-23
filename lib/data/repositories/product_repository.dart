@@ -15,77 +15,8 @@ class ProductRepository {
 
   /// Initialize with sample products
   Future<void> initializeSampleData() async {
-    final products = await getAllProducts();
-    if (products.isEmpty) {
-      final now = DateTime.now();
-      final sampleProducts = [
-        // Matcha
-        _createProduct('Latte', 2800, ProductCategory.matcha, now),
-        _createProduct('Taro', 3000, ProductCategory.matcha, now),
-        _createProduct('Arándanos', 3000, ProductCategory.matcha, now),
-        _createProduct('Mango', 3000, ProductCategory.matcha, now),
-        _createProduct('Maracuyá', 3000, ProductCategory.matcha, now),
-        _createProduct('Fresa', 3000, ProductCategory.matcha, now),
-        _createProduct('Fresas Cremosas', 3500, ProductCategory.matcha, now),
-        _createProduct('Piña Colada', 3500, ProductCategory.matcha, now),
-        _createProduct('Agua de Pipa', 3000, ProductCategory.matcha, now),
-        _createProduct('Pistacho', 3500, ProductCategory.matcha, now),
-        _createProduct('Espresso', 3000, ProductCategory.matcha, now),
-        _createProduct('Limonada de Coco', 3000, ProductCategory.matcha, now),
-        _createProduct('Fresa Mango', 3500, ProductCategory.matcha, now),
-        _createProduct('Banano', 3500, ProductCategory.matcha, now),
-        _createProduct('Galleta Oreo', 3500, ProductCategory.matcha, now),
-        _createProduct('Chocolate', 3000, ProductCategory.matcha, now),
-        _createProduct('Caramelo', 3000, ProductCategory.matcha, now),
-        _createProduct('Galleta María', 3000, ProductCategory.matcha, now),
-        // Batidos
-        _createProduct('Mango - Maracuyá - Naranja', 2700, ProductCategory.smoothies, now),
-        _createProduct('Fresa - Mora - Arándanos', 2700, ProductCategory.smoothies, now),
-        _createProduct('Mango - Naranja - Melocotón', 2700, ProductCategory.smoothies, now),
-        _createProduct('Piña Colada y Fresa', 3000, ProductCategory.smoothies, now),
-        _createProduct('Frutas con agua', 2000, ProductCategory.smoothies, now),
-        _createProduct('Frutas con leche', 2700, ProductCategory.smoothies, now),
-        // Jugos Saludables
-        _createProduct('Detox', 2500, ProductCategory.healthyJuices, now,
-            description: 'Piña, apio, pepino, naranja'),
-        _createProduct('Pérdida de Peso', 2500, ProductCategory.healthyJuices, now,
-            description: 'Piña, mango, espinaca, chía'),
-        _createProduct('Anti Estreñimiento', 2500, ProductCategory.healthyJuices, now,
-            description: 'Papaya, piña, apio, chía'),
-        // Cafés Fríos
-        _createProduct('Frozen Capuccino', 2800, ProductCategory.coldCoffee, now),
-        _createProduct('Fresa Coffee', 3200, ProductCategory.coldCoffee, now),
-        _createProduct('Oreo Coffee', 3200, ProductCategory.coldCoffee, now),
-        _createProduct('Caramel Macchiato', 3200, ProductCategory.coldCoffee, now),
-      ];
-
-      for (var product in sampleProducts) {
-        await _saveProduct(product);
-      }
-      debugPrint('Sample products initialized: ${sampleProducts.length} products');
-    }
-  }
-
-  // Helper interno — imageUrl es null por defecto en los datos de muestra
-  ProductModel _createProduct(
-    String name,
-    double price,
-    ProductCategory category,
-    DateTime now, {
-    String? description,
-    String? imageUrl,
-  }) {
-    return ProductModel(
-      id: _uuid.v4(),
-      name: name,
-      price: price,
-      category: category,
-      description: description,
-      isAvailable: true,
-      imageUrl: imageUrl,
-      createdAt: now,
-      updatedAt: now,
-    );
+    // A multi-business installation starts with an empty catalog. Products are
+    // created from Administration according to the configured establishment.
   }
 
   /// Get all products
@@ -115,8 +46,7 @@ class ProductRepository {
     try {
       final products = await getAllProducts();
       products.add(product);
-      final productsJson =
-          products.map((p) => jsonEncode(p.toJson())).toList();
+      final productsJson = products.map((p) => jsonEncode(p.toJson())).toList();
       await _prefs.setStringList(AppConstants.storageKeyProducts, productsJson);
     } catch (e) {
       debugPrint('Save product error: $e');
@@ -129,7 +59,7 @@ class ProductRepository {
     required double price,
     required ProductCategory category,
     String? description,
-    String? imageUrl,           // ← NUEVO
+    String? imageUrl, // ← NUEVO
   }) async {
     try {
       final now = DateTime.now();
@@ -140,7 +70,7 @@ class ProductRepository {
         category: category,
         description: description,
         isAvailable: true,
-        imageUrl: imageUrl,     // ← NUEVO
+        imageUrl: imageUrl, // ← NUEVO
         createdAt: now,
         updatedAt: now,
       );
@@ -174,8 +104,7 @@ class ProductRepository {
     try {
       final products = await getAllProducts();
       products.removeWhere((p) => p.id == productId);
-      final productsJson =
-          products.map((p) => jsonEncode(p.toJson())).toList();
+      final productsJson = products.map((p) => jsonEncode(p.toJson())).toList();
       await _prefs.setStringList(AppConstants.storageKeyProducts, productsJson);
     } catch (e) {
       debugPrint('Delete product error: $e');

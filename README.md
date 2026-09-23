@@ -1,16 +1,29 @@
-# matcha_lovers_506
+# POS-MASTER
 
-A new Flutter project.
+Sistema de punto de venta configurable y multiplataforma para restaurantes,
+sodas, cafeterías, ventanillas, pulperías, comercios y establecimientos de
+servicios.
 
-## Getting Started
+## Funciones actuales
 
-This project is a starting point for a Flutter application.
+- Configuración inicial de nombre comercial, tipo de negocio y paleta de color.
+- Acceso diferenciado para administrador y mesero.
+- Catálogo editable con productos, categorías, precios, disponibilidad e imágenes.
+- Carrito, cobro, impuestos, SINPE, tarjeta y efectivo.
+- Historial de órdenes, usuarios, reportes y productos más vendidos.
+- Interfaz adaptable para web, Android, iOS, Windows y Linux.
 
-A few resources to get you started if this is your first Flutter project:
+## Desarrollo
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Requiere Flutter con Dart 3.6 o superior.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+flutter pub get
+flutter analyze
+flutter test
+flutter run
+```
+
+El identificador interno del paquete Dart se conserva temporalmente como
+`matcha_lovers_506` para no romper importaciones ni instalaciones existentes;
+el nombre público del producto y de las aplicaciones es `POS-MASTER`.

@@ -12,27 +12,35 @@ class ProductCard extends StatelessWidget {
 
   Color get _bgColor {
     switch (product.category) {
-      case ProductCategory.matcha:
+      case ProductCategory.meals:
         return const Color(0xFFDFF2D0);
-      case ProductCategory.smoothies:
+      case ProductCategory.drinks:
         return const Color(0xFFFFE4F0);
-      case ProductCategory.healthyJuices:
+      case ProductCategory.groceries:
         return const Color(0xFFFFF3CC);
-      case ProductCategory.coldCoffee:
+      case ProductCategory.desserts:
         return const Color(0xFFE8DDD0);
+      case ProductCategory.services:
+        return const Color(0xFFDDEBFF);
+      case ProductCategory.other:
+        return const Color(0xFFE8E8E8);
     }
   }
 
   Color get _accentColor {
     switch (product.category) {
-      case ProductCategory.matcha:
+      case ProductCategory.meals:
         return AppColors.oliveGreen;
-      case ProductCategory.smoothies:
+      case ProductCategory.drinks:
         return AppColors.peach;
-      case ProductCategory.healthyJuices:
+      case ProductCategory.groceries:
         return AppColors.amber;
-      case ProductCategory.coldCoffee:
+      case ProductCategory.desserts:
         return const Color(0xFF8B6D5A);
+      case ProductCategory.services:
+        return const Color(0xFF2864A8);
+      case ProductCategory.other:
+        return const Color(0xFF616161);
     }
   }
 
@@ -95,7 +103,8 @@ class ProductCard extends StatelessWidget {
                                 color: _accentColor,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Icon(Icons.add, color: Colors.white, size: 16),
+                              child: const Icon(Icons.add,
+                                  color: Colors.white, size: 16),
                             ),
                           ],
                         ),
@@ -247,7 +256,8 @@ class _ProductImage extends StatelessWidget {
           if (progress == null) return child;
           return Container(
             color: bgColor,
-            child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+            child:
+                const Center(child: CircularProgressIndicator(strokeWidth: 2)),
           );
         },
       );

@@ -1,6 +1,6 @@
 /// Core constants for the application
 class AppConstants {
-  static const String appName = 'Matcha Lovers 506';
+  static const String appName = 'POS-MASTER';
   static const String currency = '₡';
 
   // Storage keys
@@ -13,7 +13,8 @@ class AppConstants {
 /// User roles
 enum UserRole {
   admin,
-  waiter;
+  waiter,
+  customer;
 
   String get displayName {
     switch (this) {
@@ -21,40 +22,52 @@ enum UserRole {
         return 'Administrador';
       case UserRole.waiter:
         return 'Mesero';
+      case UserRole.customer:
+        return 'Cliente autoservicio';
     }
   }
 }
 
 /// Product categories
 enum ProductCategory {
-  matcha,
-  smoothies,
-  healthyJuices,
-  coldCoffee;
+  meals,
+  drinks,
+  groceries,
+  desserts,
+  services,
+  other;
 
   String get displayName {
     switch (this) {
-      case ProductCategory.matcha:
-        return 'Matcha';
-      case ProductCategory.smoothies:
-        return 'Batidos';
-      case ProductCategory.healthyJuices:
-        return 'Jugos Saludables';
-      case ProductCategory.coldCoffee:
-        return 'Cafés Fríos';
+      case ProductCategory.meals:
+        return 'Comidas';
+      case ProductCategory.drinks:
+        return 'Bebidas';
+      case ProductCategory.groceries:
+        return 'Abarrotes';
+      case ProductCategory.desserts:
+        return 'Postres';
+      case ProductCategory.services:
+        return 'Servicios';
+      case ProductCategory.other:
+        return 'Otros';
     }
   }
 
   String get icon {
     switch (this) {
-      case ProductCategory.matcha:
-        return '🍵';
-      case ProductCategory.smoothies:
+      case ProductCategory.meals:
+        return '🍽️';
+      case ProductCategory.drinks:
         return '🥤';
-      case ProductCategory.healthyJuices:
-        return '🥗';
-      case ProductCategory.coldCoffee:
-        return '☕';
+      case ProductCategory.groceries:
+        return '🛒';
+      case ProductCategory.desserts:
+        return '🍰';
+      case ProductCategory.services:
+        return '🛠️';
+      case ProductCategory.other:
+        return '📦';
     }
   }
 }

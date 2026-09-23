@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:matcha_lovers_506/core/constants.dart';
 import 'package:matcha_lovers_506/domain/entities/order_entity.dart';
 import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
+import 'package:matcha_lovers_506/presentation/providers/business_settings_provider.dart';
 import 'package:matcha_lovers_506/presentation/providers/cart_provider.dart';
 import 'package:matcha_lovers_506/presentation/providers/order_provider.dart';
 import 'package:matcha_lovers_506/theme.dart';
@@ -60,15 +61,15 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     final orderItems = cart.map((item) => item.toOrderItem()).toList();
 
     final order = await ref.read(orderProvider.notifier).createOrder(
-      userId: currentUser.id,
-      userName: currentUser.fullName,
-      items: orderItems,
-      paymentMethod: _selectedPaymentMethod,
-      taxExempt: _taxExempt,
-      sinpeVoucher: _selectedPaymentMethod == PaymentMethod.sinpe
-          ? _voucherCtrl.text.trim()
-          : null,
-    );
+          userId: currentUser.id,
+          userName: currentUser.fullName,
+          items: orderItems,
+          paymentMethod: _selectedPaymentMethod,
+          taxExempt: _taxExempt,
+          sinpeVoucher: _selectedPaymentMethod == PaymentMethod.sinpe
+              ? _voucherCtrl.text.trim()
+              : null,
+        );
 
     if (!mounted) return;
 
@@ -107,16 +108,16 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final cart = ref.watch(cartProvider);
+    final currentUser = ref.watch(currentUserProvider);
     final cartSummary = ref.watch(cartSummaryProvider);
-    final formatter = NumberFormat.currency(
-        symbol: AppConstants.currency, decimalDigits: 0);
+    final formatter =
+        NumberFormat.currency(symbol: AppConstants.currency, decimalDigits: 0);
 
     if (cart.isEmpty && !_paymentDone) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) context.pop();
       });
-      return const Scaffold(
-          body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     // Recalcular totales con exoneración
@@ -166,64 +167,67 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 const SizedBox(height: 24),
 
                 // ── Items ─────────────────────────────────────────────
-                Container(
-                  padding: AppSpacing.paddingMd,
-                  decoration: BoxDecoration(
-                    color: AppColors.softGreen.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    children: cart.map((item) => Padding(
-                      padding: AppSpacing.verticalSm,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: AppColors.oliveGreen,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '${item.quantity}x',
-                                style: context.textStyles.bodyMedium
-                                    ?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                if (currentUser?.role != UserRole.customer)
+                  Container(
+                    padding: AppSpacing.paddingMd,
+                    decoration: BoxDecoration(
+                      color: AppColors.softGreen.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: cart
+                          .map((item) => Padding(
+                                padding: AppSpacing.verticalSm,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.oliveGreen,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          '${item.quantity}x',
+                                          style: context.textStyles.bodyMedium
+                                              ?.copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(item.product.name,
+                                          style: context.textStyles.bodyLarge),
+                                    ),
+                                    Text(
+                                      formatter.format(item.total),
+                                      style: context
+                                          .textStyles.bodyLarge?.semiBold,
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(item.product.name,
-                                style: context.textStyles.bodyLarge),
-                          ),
-                          Text(
-                            formatter.format(item.total),
-                            style: context.textStyles.bodyLarge?.semiBold,
-                          ),
-                        ],
-                      ),
-                    )).toList(),
+                              ))
+                          .toList(),
+                    ),
                   ),
-                ),
                 const SizedBox(height: 20),
 
                 // ── Exoneración de IVA ────────────────────────────────
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
                     color: _taxExempt
                         ? AppColors.oliveGreen.withValues(alpha: 0.08)
                         : Colors.grey[50],
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: _taxExempt
-                          ? AppColors.oliveGreen
-                          : Colors.grey[300]!,
+                      color:
+                          _taxExempt ? AppColors.oliveGreen : Colors.grey[300]!,
                     ),
                   ),
                   child: Row(
@@ -243,9 +247,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                               'Exonerar IVA (13%)',
                               style: context.textStyles.titleSmall?.copyWith(
                                 fontWeight: FontWeight.w600,
-                                color: _taxExempt
-                                    ? AppColors.oliveGreen
-                                    : null,
+                                color: _taxExempt ? AppColors.oliveGreen : null,
                               ),
                             ),
                             Text(
@@ -266,7 +268,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                if (currentUser?.role != UserRole.customer)
+                  const SizedBox(height: 16),
 
                 // ── Totales ───────────────────────────────────────────
                 _summaryRow('Subtotal', formatter.format(subtotal)),
@@ -304,9 +307,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       _taxExempt ? '₡0' : formatter.format(tax),
                       style: context.textStyles.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w600,
-                        decoration: _taxExempt
-                            ? TextDecoration.lineThrough
-                            : null,
+                        decoration:
+                            _taxExempt ? TextDecoration.lineThrough : null,
                         color: _taxExempt ? Colors.grey[400] : null,
                       ),
                     ),
@@ -327,8 +329,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       child: _PaymentMethodOption(
                         method: method,
                         isSelected: _selectedPaymentMethod == method,
-                        onTap: () => setState(
-                            () => _selectedPaymentMethod = method),
+                        onTap: () =>
+                            setState(() => _selectedPaymentMethod = method),
                       ),
                     )),
 
@@ -349,14 +351,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       fillColor: AppColors.softGreen.withValues(alpha: 0.2),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                            color: AppColors.oliveGreen),
+                        borderSide:
+                            const BorderSide(color: AppColors.oliveGreen),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide(
-                            color: AppColors.oliveGreen
-                                .withValues(alpha: 0.4)),
+                            color: AppColors.oliveGreen.withValues(alpha: 0.4)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -389,8 +390,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                               const SizedBox(width: 8),
                               Text(
                                 'Confirmar Pago',
-                                style: context.textStyles.titleMedium
-                                    ?.copyWith(
+                                style: context.textStyles.titleMedium?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -477,9 +477,7 @@ class _PaymentMethodOption extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.oliveGreen
-                      : Colors.grey[300],
+                  color: isSelected ? AppColors.oliveGreen : Colors.grey[300],
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(_icon,
@@ -494,9 +492,8 @@ class _PaymentMethodOption extends StatelessWidget {
                     Text(
                       method.displayName,
                       style: context.textStyles.titleSmall?.copyWith(
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.w500,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.w500,
                         color: isSelected ? AppColors.oliveGreen : null,
                       ),
                     ),
@@ -537,12 +534,11 @@ class _SuccessDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formatter = NumberFormat.currency(
-        symbol: AppConstants.currency, decimalDigits: 0);
+    final formatter =
+        NumberFormat.currency(symbol: AppConstants.currency, decimalDigits: 0);
 
     return Dialog(
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Padding(
         padding: AppSpacing.paddingXl,
         child: Column(
@@ -580,8 +576,8 @@ class _SuccessDialog extends StatelessWidget {
             if (order.taxExempt) ...[
               const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.oliveGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
@@ -668,8 +664,8 @@ class _InvoiceDialog extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'Factura',
-                    style: context.textStyles.titleMedium
-                        ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: context.textStyles.titleMedium?.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
                 IconButton(
@@ -749,20 +745,20 @@ class _InvoiceDialog extends StatelessWidget {
   String _buildInvoiceText(OrderEntity order) {
     final formatter =
         NumberFormat.currency(symbol: AppConstants.currency, decimalDigits: 0);
-    final dateStr =
-        DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt);
+    final dateStr = DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt);
     final buf = StringBuffer();
+    final businessName = ref.read(businessSettingsProvider).businessName;
 
     buf.writeln('================================');
-    buf.writeln('       MATCHA LOVERS 506');
+    buf.writeln(businessName.isEmpty ? AppConstants.appName : businessName);
+    buf.writeln(AppConstants.appName);
     buf.writeln('================================');
     buf.writeln('Fecha: $dateStr');
     buf.writeln('Pedido: #${order.id.substring(0, 8).toUpperCase()}');
     buf.writeln('Atendió: ${order.userName}');
     buf.writeln('--------------------------------');
     for (final item in order.items) {
-      buf.writeln(
-          '${item.quantity}x ${item.productName}');
+      buf.writeln('${item.quantity}x ${item.productName}');
       buf.writeln(
           '   ${formatter.format(item.price)} c/u  →  ${formatter.format(item.total)}');
     }
@@ -803,8 +799,7 @@ class _InvoiceContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final formatter =
         NumberFormat.currency(symbol: AppConstants.currency, decimalDigits: 0);
-    final dateStr =
-        DateFormat('dd/MM/yyyy · HH:mm').format(order.createdAt);
+    final dateStr = DateFormat('dd/MM/yyyy · HH:mm').format(order.createdAt);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -835,8 +830,8 @@ class _InvoiceContent extends StatelessWidget {
 
         // Info orden
         _infoRow('Fecha', dateStr, context),
-        _infoRow('Pedido',
-            '#${order.id.substring(0, 8).toUpperCase()}', context),
+        _infoRow(
+            'Pedido', '#${order.id.substring(0, 8).toUpperCase()}', context),
         _infoRow('Atendió', order.userName, context),
         _divider(),
 
@@ -850,8 +845,8 @@ class _InvoiceContent extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: AppColors.oliveGreen.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
@@ -887,16 +882,14 @@ class _InvoiceContent extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text('IVA (13%)',
-                    style: context.textStyles.bodyMedium),
+                Text('IVA (13%)', style: context.textStyles.bodyMedium),
                 if (order.taxExempt) ...[
                   const SizedBox(width: 6),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color:
-                          AppColors.oliveGreen.withValues(alpha: 0.1),
+                      color: AppColors.oliveGreen.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Text(
@@ -914,8 +907,7 @@ class _InvoiceContent extends StatelessWidget {
             Text(
               order.taxExempt ? '₡0' : formatter.format(order.tax),
               style: context.textStyles.bodyMedium?.copyWith(
-                decoration:
-                    order.taxExempt ? TextDecoration.lineThrough : null,
+                decoration: order.taxExempt ? TextDecoration.lineThrough : null,
                 color: order.taxExempt ? Colors.grey[400] : null,
               ),
             ),
@@ -949,8 +941,7 @@ class _InvoiceContent extends StatelessWidget {
         _divider(),
 
         // Pago
-        _infoRow(
-            'Método de pago', order.paymentMethod.displayName, context),
+        _infoRow('Método de pago', order.paymentMethod.displayName, context),
         if (order.sinpeVoucher != null)
           _infoRow('Comprobante SINPE', order.sinpeVoucher!, context),
         if (order.taxExempt)
@@ -999,8 +990,7 @@ class _InvoiceContent extends StatelessWidget {
         child: Divider(height: 1),
       );
 
-  Widget _infoRow(String label, String value, BuildContext context) =>
-      Padding(
+  Widget _infoRow(String label, String value, BuildContext context) => Padding(
         padding: const EdgeInsets.only(bottom: 4),
         child: Row(
           children: [
@@ -1008,20 +998,17 @@ class _InvoiceContent extends StatelessWidget {
                 style: context.textStyles.bodySmall
                     ?.copyWith(color: Colors.grey[500])),
             Expanded(
-              child: Text(value,
-                  style: context.textStyles.bodySmall?.semiBold),
+              child: Text(value, style: context.textStyles.bodySmall?.semiBold),
             ),
           ],
         ),
       );
 
-  Widget _totalRow(String label, String value, BuildContext context) =>
-      Row(
+  Widget _totalRow(String label, String value, BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: context.textStyles.bodyMedium),
-          Text(value,
-              style: context.textStyles.bodyMedium?.semiBold),
+          Text(value, style: context.textStyles.bodyMedium?.semiBold),
         ],
       );
 }

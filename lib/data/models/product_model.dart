@@ -20,10 +20,7 @@ class ProductModel extends ProductEntity {
       id: json['id'] as String,
       name: json['name'] as String,
       price: (json['price'] as num).toDouble(),
-      category: ProductCategory.values.firstWhere(
-        (e) => e.name == json['category'],
-        orElse: () => ProductCategory.matcha,
-      ),
+      category: _categoryFromStorage(json['category'] as String?),
       description: json['description'] as String?,
       isAvailable: json['isAvailable'] as bool? ?? true,
       imageUrl: json['imageUrl'] as String?,
@@ -58,5 +55,21 @@ class ProductModel extends ProductEntity {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     );
+  }
+}
+
+ProductCategory _categoryFromStorage(String? value) {
+  // Migrates data created by the original single-business Matcha version.
+  switch (value) {
+    case 'matcha':
+    case 'smoothies':
+    case 'healthyJuices':
+    case 'coldCoffee':
+      return ProductCategory.drinks;
+    default:
+      return ProductCategory.values.firstWhere(
+        (category) => category.name == value,
+        orElse: () => ProductCategory.other,
+      );
   }
 }

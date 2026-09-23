@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:matcha_lovers_506/core/constants.dart';
 import 'package:matcha_lovers_506/core/responsive/responsive_helper.dart';
 import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
+import 'package:matcha_lovers_506/presentation/providers/business_settings_provider.dart';
 import 'package:matcha_lovers_506/theme.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -49,6 +50,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  void _startSelfService() {
+    ref.read(authProvider.notifier).startSelfService();
+    context.go('/pos');
+  }
+
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -62,12 +68,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(businessSettingsProvider);
     return Scaffold(
       backgroundColor: AppColors.softGreen,
       body: SafeArea(
         child: ResponsiveLayout(
-          mobile: _MobileLogin(form: _buildForm(context)),
-          desktop: _DesktopLogin(form: _buildForm(context)),
+          mobile: _MobileLogin(
+            form: _buildForm(context),
+            businessName: settings.businessName,
+          ),
+          desktop: _DesktopLogin(
+            form: _buildForm(context),
+            businessName: settings.businessName,
+            businessType: settings.businessType.label,
+          ),
         ),
       ),
     );
@@ -172,6 +186,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
             ),
           ),
+          const SizedBox(height: AppSpacing.md),
+          OutlinedButton.icon(
+            onPressed: _isLoading ? null : _startSelfService,
+            icon: const Icon(Icons.touch_app),
+            label: const Text('Entrar como cliente · Autoservicio'),
+          ),
           const SizedBox(height: AppSpacing.lg),
           _buildCredentialsHint(context),
         ],
@@ -204,7 +224,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
 class _MobileLogin extends StatelessWidget {
   final Widget form;
-  const _MobileLogin({required this.form});
+  final String businessName;
+  const _MobileLogin({required this.form, required this.businessName});
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +237,7 @@ class _MobileLogin extends StatelessWidget {
           children: [
             _Logo(size: 100),
             const SizedBox(height: AppSpacing.xl),
-            _AppTitle(),
+            _AppTitle(businessName: businessName),
             const SizedBox(height: AppSpacing.xxl),
             form,
           ],
@@ -232,7 +253,13 @@ class _MobileLogin extends StatelessWidget {
 
 class _DesktopLogin extends StatelessWidget {
   final Widget form;
-  const _DesktopLogin({required this.form});
+  final String businessName;
+  final String businessType;
+  const _DesktopLogin({
+    required this.form,
+    required this.businessName,
+    required this.businessType,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +275,7 @@ class _DesktopLogin extends StatelessWidget {
                 _Logo(size: 140, bgColor: Colors.white.withValues(alpha: 0.15)),
                 const SizedBox(height: AppSpacing.xl),
                 Text(
-                  AppConstants.appName,
+                  businessName,
                   style: context.textStyles.headlineLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -257,7 +284,7 @@ class _DesktopLogin extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Sistema de Punto de Venta',
+                  '$businessType · ${AppConstants.appName}',
                   style: context.textStyles.bodyLarge?.copyWith(
                     color: Colors.white.withValues(alpha: 0.8),
                   ),
@@ -298,7 +325,10 @@ class _DesktopLogin extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _AppTitle(color: AppColors.oliveGreen),
+                  _AppTitle(
+                    color: AppColors.oliveGreen,
+                    businessName: businessName,
+                  ),
                   const SizedBox(height: AppSpacing.xl),
                   form,
                 ],
@@ -339,14 +369,15 @@ class _Logo extends StatelessWidget {
 
 class _AppTitle extends StatelessWidget {
   final Color? color;
-  const _AppTitle({this.color});
+  final String businessName;
+  const _AppTitle({this.color, required this.businessName});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
-          AppConstants.appName,
+          businessName,
           style: context.textStyles.headlineMedium?.copyWith(
             color: color ?? AppColors.oliveGreen,
             fontWeight: FontWeight.bold,
@@ -355,7 +386,7 @@ class _AppTitle extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Sistema de Punto de Venta',
+          AppConstants.appName,
           style: context.textStyles.bodyLarge?.copyWith(
             color: (color ?? AppColors.oliveGreen).withValues(alpha: 0.7),
           ),

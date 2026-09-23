@@ -40,7 +40,7 @@ class AuthNotifier extends Notifier<AsyncValue<UserEntity?>> {
     try {
       state = const AsyncValue.loading();
       final user = await _repository.login(username, password);
-      
+
       if (user != null) {
         state = AsyncValue.data(user);
         return true;
@@ -53,6 +53,22 @@ class AuthNotifier extends Notifier<AsyncValue<UserEntity?>> {
       state = AsyncValue.error(e, stack);
       return false;
     }
+  }
+
+  /// Starts a temporary session for a customer using a self-service device.
+  void startSelfService() {
+    final now = DateTime.now();
+    state = AsyncValue.data(
+      UserEntity(
+        id: 'self-service',
+        username: 'autoservicio',
+        password: '',
+        role: UserRole.customer,
+        fullName: 'Cliente Autoservicio',
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
   }
 
   Future<void> logout() async {
@@ -71,7 +87,8 @@ class AuthNotifier extends Notifier<AsyncValue<UserEntity?>> {
 }
 
 /// Provider for authentication state
-final authProvider = NotifierProvider<AuthNotifier, AsyncValue<UserEntity?>>(() {
+final authProvider =
+    NotifierProvider<AuthNotifier, AsyncValue<UserEntity?>>(() {
   return AuthNotifier();
 });
 
