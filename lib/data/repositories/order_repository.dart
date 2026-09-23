@@ -57,6 +57,7 @@ class OrderRepository {
     required PaymentMethod paymentMethod,
     bool taxExempt = false,
     String? sinpeVoucher,
+    OrderStatus initialStatus = OrderStatus.completed,
   }) async {
     try {
       final now = DateTime.now();
@@ -74,7 +75,7 @@ class OrderRepository {
         subtotal: subtotal,
         tax: tax,
         total: total,
-        status: OrderStatus.completed,
+        status: initialStatus,
         paymentMethod: paymentMethod,
         taxExempt: taxExempt,
         sinpeVoucher: sinpeVoucher,

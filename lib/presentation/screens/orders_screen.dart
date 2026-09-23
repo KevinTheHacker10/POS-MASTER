@@ -174,9 +174,58 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 context,
                 isTotal: true,
               ),
+              if (order.status == OrderStatus.pending) ...[
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _changeOrderStatus(
+                          ctx,
+                          order,
+                          OrderStatus.cancelled,
+                        ),
+                        icon: const Icon(Icons.close),
+                        label: const Text('Cancelar'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.coral,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _changeOrderStatus(
+                          ctx,
+                          order,
+                          OrderStatus.completed,
+                        ),
+                        icon: const Icon(Icons.check),
+                        label: const Text('Cobrar y completar'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _changeOrderStatus(
+    BuildContext sheetContext,
+    OrderEntity order,
+    OrderStatus status,
+  ) async {
+    await ref.read(orderProvider.notifier).updateOrderStatus(order.id, status);
+    if (!mounted) return;
+    Navigator.of(sheetContext).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Orden marcada como ${status.displayName.toLowerCase()}'),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }

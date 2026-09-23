@@ -69,6 +69,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           sinpeVoucher: _selectedPaymentMethod == PaymentMethod.sinpe
               ? _voucherCtrl.text.trim()
               : null,
+          initialStatus: currentUser.role == UserRole.customer
+              ? OrderStatus.pending
+              : OrderStatus.completed,
         );
 
     if (!mounted) return;
@@ -391,7 +394,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                               const Icon(Icons.check_circle, size: 24),
                               const SizedBox(width: 8),
                               Text(
-                                'Confirmar Pago',
+                                currentUser?.role == UserRole.customer
+                                    ? 'Enviar Pedido'
+                                    : 'Confirmar Pago',
                                 style: context.textStyles.titleMedium?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -538,6 +543,7 @@ class _SuccessDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final formatter =
         NumberFormat.currency(symbol: AppConstants.currency, decimalDigits: 0);
+    final isPending = order.status == OrderStatus.pending;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -556,9 +562,18 @@ class _SuccessDialog extends StatelessWidget {
                   color: AppColors.oliveGreen, size: 64),
             ),
             const SizedBox(height: 20),
-            Text('¡Pago Exitoso!',
+            Text(isPending ? '¡Pedido Enviado!' : '¡Pago Exitoso!',
                 style: context.textStyles.headlineSmall?.bold,
                 textAlign: TextAlign.center),
+            if (isPending) ...[
+              const SizedBox(height: 8),
+              Text(
+                'El personal confirmará el pago y preparará tu pedido.',
+                style: context.textStyles.bodyMedium
+                    ?.copyWith(color: Colors.grey[600]),
+                textAlign: TextAlign.center,
+              ),
+            ],
             const SizedBox(height: 12),
             Text(
               formatter.format(order.total),

@@ -41,6 +41,7 @@ class OrderNotifier extends Notifier<AsyncValue<List<OrderEntity>>> {
     required PaymentMethod paymentMethod,
     bool taxExempt = false,
     String? sinpeVoucher,
+    OrderStatus initialStatus = OrderStatus.completed,
   }) async {
     try {
       final order = await _repository.createOrder(
@@ -50,6 +51,7 @@ class OrderNotifier extends Notifier<AsyncValue<List<OrderEntity>>> {
         paymentMethod: paymentMethod,
         taxExempt: taxExempt,
         sinpeVoucher: sinpeVoucher,
+        initialStatus: initialStatus,
       );
       if (order != null) await loadOrders();
       return order;
