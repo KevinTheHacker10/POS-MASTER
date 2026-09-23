@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pos_master/core/constants.dart';
 import 'package:pos_master/main.dart';
 import 'package:pos_master/presentation/providers/auth_provider.dart';
 import 'package:pos_master/presentation/screens/login_screen.dart';
@@ -129,4 +132,52 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testWidgets('self-service completes the catalog-to-pending-order flow',
+      (tester) async {
+    _setViewport(tester, const Size(1440, 900));
+    final now = DateTime(2026, 1, 1).toIso8601String();
+    final preferences = await _preferences({
+      ..._configuredBusiness,
+      AppConstants.storageKeyProducts: [
+        jsonEncode({
+          'id': 'meal-1',
+          'name': 'Casado de prueba',
+          'price': 3500,
+          'category': ProductCategory.meals.name,
+          'description': 'Producto para validar el flujo de venta',
+          'isAvailable': true,
+          'imageUrl': '🍽️',
+          'createdAt': now,
+          'updatedAt': now,
+        }),
+      ],
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(preferences),
+        ],
+        child: const MyApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Entrar como cliente · Autoservicio'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Casado de prueba'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Procesar Pago'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Enviar Pedido'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('¡Pedido Enviado!'), findsOneWidget);
+    final storedOrders =
+        preferences.getStringList(AppConstants.storageKeyOrders) ?? [];
+    expect(storedOrders, hasLength(1));
+    expect(jsonDecode(storedOrders.single)['status'], OrderStatus.pending.name);
+    expect(tester.takeException(), isNull);
+  });
 }
