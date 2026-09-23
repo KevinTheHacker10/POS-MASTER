@@ -106,4 +106,15 @@ jobs:
         run: flutter pub get
 
       - name: Build ${{ matrix.target }}
-        run: ${{ matrix.command }}
+        shell: bash
+        run: |
+          set +e
+          output=$(${{ matrix.command }} 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            while IFS= read -r line; do
+              echo "::error file=pubspec.yaml,title=Flutter ${{ matrix.target }} build::$line"
+            done < <(echo "$output" | tail -60)
+          fi
+          exit "$status"
