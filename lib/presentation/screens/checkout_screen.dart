@@ -640,13 +640,14 @@ class _SuccessDialog extends StatelessWidget {
 // INVOICE DIALOG — Factura imprimible
 // =============================================================================
 
-class _InvoiceDialog extends StatelessWidget {
+class _InvoiceDialog extends ConsumerWidget {
   final OrderEntity order;
 
   const _InvoiceDialog({required this.order});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final businessName = ref.watch(businessSettingsProvider).businessName;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Column(
@@ -702,7 +703,9 @@ class _InvoiceDialog extends StatelessWidget {
                     label: const Text('Copiar'),
                     onPressed: () {
                       Clipboard.setData(
-                        ClipboardData(text: _buildInvoiceText(order)),
+                        ClipboardData(
+                          text: _buildInvoiceText(order, businessName),
+                        ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -722,7 +725,9 @@ class _InvoiceDialog extends StatelessWidget {
                       // En web/desktop abre el diálogo de impresión del sistema
                       // En mobile copia al portapapeles como fallback
                       Clipboard.setData(
-                        ClipboardData(text: _buildInvoiceText(order)),
+                        ClipboardData(
+                          text: _buildInvoiceText(order, businessName),
+                        ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -744,13 +749,11 @@ class _InvoiceDialog extends StatelessWidget {
   }
 
   /// Texto plano de la factura para copiar/imprimir
-  String _buildInvoiceText(OrderEntity order) {
+  String _buildInvoiceText(OrderEntity order, String businessName) {
     final formatter =
         NumberFormat.currency(symbol: AppConstants.currency, decimalDigits: 0);
     final dateStr = DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt);
     final buf = StringBuffer();
-    final businessName = ref.read(businessSettingsProvider).businessName;
-
     buf.writeln('================================');
     buf.writeln(businessName.isEmpty ? AppConstants.appName : businessName);
     buf.writeln(AppConstants.appName);
