@@ -32,11 +32,33 @@ jobs:
         run: dart format --output=none lib test
 
       - name: Analyze
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+        shell: bash
+        run: |
+          set +e
+          output=$(flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            while IFS= read -r line; do
+              echo "::error file=analysis_options.yaml,title=Flutter analyze::$line"
+            done < <(echo "$output" | tail -40)
+          fi
+          exit "$status"
         continue-on-error: true
 
       - name: Test
         run: flutter test
 
       - name: Build web
-        run: flutter build web --release
+        shell: bash
+        run: |
+          set +e
+          output=$(flutter build web --release 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            while IFS= read -r line; do
+              echo "::error file=pubspec.yaml,title=Flutter web build::$line"
+            done < <(echo "$output" | tail -40)
+          fi
+          exit "$status"
