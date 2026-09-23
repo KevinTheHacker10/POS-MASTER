@@ -168,57 +168,49 @@ class FontSizes {
 // =============================================================================
 
 /// Light theme with a modern, touch-friendly POS aesthetic.
-ThemeData get lightTheme => ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.light(
-        primary: AppColors.lightPrimary,
-        onPrimary: AppColors.lightOnPrimary,
-        primaryContainer: AppColors.lightPrimaryContainer,
-        onPrimaryContainer: AppColors.lightOnPrimaryContainer,
-        secondary: AppColors.lightSecondary,
-        onSecondary: AppColors.lightOnSecondary,
-        tertiary: AppColors.lightTertiary,
-        onTertiary: AppColors.lightOnTertiary,
-        error: AppColors.lightError,
-        onError: AppColors.lightOnError,
-        errorContainer: AppColors.lightErrorContainer,
-        onErrorContainer: AppColors.lightOnErrorContainer,
-        surface: AppColors.lightSurface,
-        onSurface: AppColors.lightOnSurface,
-        surfaceContainerHighest: AppColors.lightSurfaceVariant,
-        onSurfaceVariant: AppColors.lightOnSurfaceVariant,
-        outline: AppColors.lightOutline,
-        shadow: AppColors.lightShadow,
-        inversePrimary: AppColors.lightInversePrimary,
-      ),
-      brightness: Brightness.light,
-      scaffoldBackgroundColor: AppColors.lightBackground,
-      appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.oliveGreen,
-        foregroundColor: Colors.white,
+ThemeData get lightTheme => buildLightTheme(AppColors.oliveGreen);
+
+/// Builds the active business theme from the palette chosen during setup.
+ThemeData buildLightTheme(Color primary) {
+  final scheme = ColorScheme.fromSeed(
+    seedColor: primary,
+    brightness: Brightness.light,
+  ).copyWith(error: AppColors.coral);
+
+  return ThemeData(
+    useMaterial3: true,
+    colorScheme: scheme,
+    brightness: Brightness.light,
+    scaffoldBackgroundColor: Color.alphaBlend(
+      primary.withValues(alpha: 0.10),
+      Colors.white,
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: scheme.primary,
+      foregroundColor: scheme.onPrimary,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      centerTitle: true,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: scheme.primary,
+        foregroundColor: scheme.onPrimary,
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.oliveGreen,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          elevation: 0,
-        ),
+    ),
+    cardTheme: CardThemeData(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
       ),
-      cardTheme: CardThemeData(
-        elevation: 0,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-      textTheme: _buildTextTheme(Brightness.light),
-    );
+    ),
+    textTheme: _buildTextTheme(Brightness.light),
+  );
+}
 
 /// Dark theme with good contrast and readability
 ThemeData get darkTheme => ThemeData(

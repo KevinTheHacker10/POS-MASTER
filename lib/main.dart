@@ -46,14 +46,10 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(businessSettingsProvider);
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: settings.palette.color,
-      brightness: Brightness.light,
-    );
     return MaterialApp.router(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
-      theme: lightTheme.copyWith(colorScheme: colorScheme),
+      theme: buildLightTheme(settings.palette.color),
       darkTheme: darkTheme,
       themeMode: ThemeMode.light,
       routerConfig: _router,
