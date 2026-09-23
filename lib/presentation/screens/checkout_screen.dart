@@ -167,107 +167,109 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 const SizedBox(height: 24),
 
                 // ── Items ─────────────────────────────────────────────
-                if (currentUser?.role != UserRole.customer)
-                  Container(
-                    padding: AppSpacing.paddingMd,
-                    decoration: BoxDecoration(
-                      color: AppColors.softGreen.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      children: cart
-                          .map((item) => Padding(
-                                padding: AppSpacing.verticalSm,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.oliveGreen,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '${item.quantity}x',
-                                          style: context.textStyles.bodyMedium
-                                              ?.copyWith(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                Container(
+                  padding: AppSpacing.paddingMd,
+                  decoration: BoxDecoration(
+                    color: AppColors.softGreen.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    children: cart
+                        .map((item) => Padding(
+                              padding: AppSpacing.verticalSm,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.oliveGreen,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        '${item.quantity}x',
+                                        style: context.textStyles.bodyMedium
+                                            ?.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(item.product.name,
-                                          style: context.textStyles.bodyLarge),
-                                    ),
-                                    Text(
-                                      formatter.format(item.total),
-                                      style: context
-                                          .textStyles.bodyLarge?.semiBold,
-                                    ),
-                                  ],
-                                ),
-                              ))
-                          .toList(),
-                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(item.product.name,
+                                        style: context.textStyles.bodyLarge),
+                                  ),
+                                  Text(
+                                    formatter.format(item.total),
+                                    style:
+                                        context.textStyles.bodyLarge?.semiBold,
+                                  ),
+                                ],
+                              ),
+                            ))
+                        .toList(),
                   ),
+                ),
                 const SizedBox(height: 20),
 
                 // ── Exoneración de IVA ────────────────────────────────
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: _taxExempt
-                        ? AppColors.oliveGreen.withValues(alpha: 0.08)
-                        : Colors.grey[50],
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color:
-                          _taxExempt ? AppColors.oliveGreen : Colors.grey[300]!,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.receipt_outlined,
+                if (currentUser?.role != UserRole.customer)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: _taxExempt
+                          ? AppColors.oliveGreen.withValues(alpha: 0.08)
+                          : Colors.grey[50],
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
                         color: _taxExempt
                             ? AppColors.oliveGreen
-                            : Colors.grey[600],
+                            : Colors.grey[300]!,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Exonerar IVA (13%)',
-                              style: context.textStyles.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: _taxExempt ? AppColors.oliveGreen : null,
-                              ),
-                            ),
-                            Text(
-                              _taxExempt
-                                  ? 'Factura sin impuesto aplicado'
-                                  : 'Activar para clientes exonerados',
-                              style: context.textStyles.bodySmall
-                                  ?.copyWith(color: Colors.grey[500]),
-                            ),
-                          ],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.receipt_outlined,
+                          color: _taxExempt
+                              ? AppColors.oliveGreen
+                              : Colors.grey[600],
                         ),
-                      ),
-                      Switch(
-                        value: _taxExempt,
-                        activeColor: AppColors.oliveGreen,
-                        onChanged: (v) => setState(() => _taxExempt = v),
-                      ),
-                    ],
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Exonerar IVA (13%)',
+                                style: context.textStyles.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      _taxExempt ? AppColors.oliveGreen : null,
+                                ),
+                              ),
+                              Text(
+                                _taxExempt
+                                    ? 'Factura sin impuesto aplicado'
+                                    : 'Activar para clientes exonerados',
+                                style: context.textStyles.bodySmall
+                                    ?.copyWith(color: Colors.grey[500]),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Switch(
+                          value: _taxExempt,
+                          activeColor: AppColors.oliveGreen,
+                          onChanged: (v) => setState(() => _taxExempt = v),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 if (currentUser?.role != UserRole.customer)
                   const SizedBox(height: 16),
 
