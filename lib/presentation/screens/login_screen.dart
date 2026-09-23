@@ -77,6 +77,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             form: _buildForm(context),
             businessName: settings.businessName,
           ),
+          tablet: _MobileLogin(
+            form: _buildForm(context),
+            businessName: settings.businessName,
+          ),
           desktop: _DesktopLogin(
             form: _buildForm(context),
             businessName: settings.businessName,
