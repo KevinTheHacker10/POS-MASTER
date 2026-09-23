@@ -39,6 +39,11 @@ jobs:
           status=$?
           echo "$output"
           if [ "$status" -ne 0 ]; then
+            diagnostic=$(printf '%s\n' "$output" | sed -n '/FAILURE: Build failed/,$p' | head -80)
+            diagnostic=${diagnostic//'%'/'%25'}
+            diagnostic=${diagnostic//$'\r'/'%0D'}
+            diagnostic=${diagnostic//$'\n'/'%0A'}
+            echo "::error file=pubspec.yaml,title=Flutter ${{ matrix.target }} failure details::$diagnostic"
             while IFS= read -r line; do
               echo "::error file=analysis_options.yaml,title=Flutter analyze::$line"
             done < <(echo "$output" | tail -40)
