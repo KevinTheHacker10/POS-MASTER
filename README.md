@@ -23,5 +23,12 @@ flutter test
 flutter run
 ```
 
+## Firebase Studio
+
+El repositorio incluye `.idx/dev.nix`. Al abrirlo en un espacio de trabajo
+Flutter de Firebase Studio se ejecuta `flutter pub get` automáticamente y se
+habilitan las vistas previas Web y Android. Si Firebase Studio solicita aplicar
+la configuración, seleccioná **Rebuild environment**.
+
 El paquete Dart, los ejecutables y los identificadores de aplicación usan la
 identidad `pos_master` / `com.posmaster.app`; el nombre público es `POS-MASTER`.
