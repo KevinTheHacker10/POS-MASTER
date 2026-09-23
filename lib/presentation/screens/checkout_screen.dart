@@ -77,7 +77,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     if (!mounted) return;
 
     if (order != null) {
-      setState(() => _paymentDone = true);
+      setState(() {
+        _paymentDone = true;
+        _isProcessing = false;
+      });
       ref.read(cartProvider.notifier).clear();
 
       // Mostrar diálogo de éxito con opción de ver factura
