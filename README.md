@@ -1,5 +1,4 @@
 # POS-MASTER
-
 Sistema de punto de venta configurable y multiplataforma para restaurantes,
 sodas, cafeterías, ventanillas, pulperías, comercios y establecimientos de
 servicios.
