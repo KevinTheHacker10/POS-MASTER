@@ -170,6 +170,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Procesar Pago'));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Enviar Pedido'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Enviar Pedido'));
     await tester.pumpAndSettle();
 
