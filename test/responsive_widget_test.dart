@@ -96,4 +96,37 @@ void main() {
     expect(find.text('Admin'), findsNothing);
     expect(tester.takeException(), isNull);
   });
+
+  for (final account in <({String username, String password, bool isAdmin})>[
+    (username: 'admin', password: 'admin123', isAdmin: true),
+    (username: 'mesero', password: 'mesero123', isAdmin: false),
+  ]) {
+    testWidgets('${account.username} receives the correct POS permissions',
+        (tester) async {
+      _setViewport(tester, const Size(390, 844));
+      final preferences = await _preferences(_configuredBusiness);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            sharedPreferencesProvider.overrideWithValue(preferences),
+          ],
+          child: const MyApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField).at(0), account.username);
+      await tester.enterText(find.byType(TextField).at(1), account.password);
+      await tester.tap(find.text('Ingresar'));
+      await tester.pumpAndSettle();
+
+      expect(find.byTooltip('Historial'), findsOneWidget);
+      expect(
+        find.byTooltip('Panel Admin'),
+        account.isAdmin ? findsOneWidget : findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
