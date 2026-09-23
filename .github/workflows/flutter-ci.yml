@@ -51,7 +51,20 @@ jobs:
           exit "$status"
 
       - name: Test
-        run: flutter test
+        shell: bash
+        run: |
+          set +e
+          output=$(flutter test --reporter expanded 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            diagnostic=$(printf '%s\n' "$output" | grep -E -A5 -B5 'TestFailure|Expected:|Actual:|Which:|EXCEPTION CAUGHT|Some tests failed' | tail -80)
+            diagnostic=${diagnostic//'%'/'%25'}
+            diagnostic=${diagnostic//$'\r'/'%0D'}
+            diagnostic=${diagnostic//$'\n'/'%0A'}
+            echo "::error file=test/responsive_widget_test.dart,title=Flutter test failure::$diagnostic"
+          fi
+          exit "$status"
 
       - name: Build web
         shell: bash
