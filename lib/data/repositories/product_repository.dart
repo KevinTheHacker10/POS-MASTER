@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/data/models/product_model.dart';
-import 'package:matcha_lovers_506/domain/entities/product_entity.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/data/models/product_model.dart';
+import 'package:pos_master/domain/entities/product_entity.dart';
 
 /// Repository for product operations
 class ProductRepository {

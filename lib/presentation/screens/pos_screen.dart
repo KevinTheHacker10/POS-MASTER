@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/domain/entities/product_entity.dart';
-import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
-import 'package:matcha_lovers_506/presentation/providers/business_settings_provider.dart';
-import 'package:matcha_lovers_506/presentation/providers/cart_provider.dart';
-import 'package:matcha_lovers_506/presentation/providers/product_provider.dart';
-import 'package:matcha_lovers_506/presentation/widgets/cart_panel.dart';
-import 'package:matcha_lovers_506/presentation/widgets/product_card.dart';
-import 'package:matcha_lovers_506/core/responsive/responsive_helper.dart';
-import 'package:matcha_lovers_506/theme.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/domain/entities/product_entity.dart';
+import 'package:pos_master/presentation/providers/auth_provider.dart';
+import 'package:pos_master/presentation/providers/business_settings_provider.dart';
+import 'package:pos_master/presentation/providers/cart_provider.dart';
+import 'package:pos_master/presentation/providers/product_provider.dart';
+import 'package:pos_master/presentation/widgets/cart_panel.dart';
+import 'package:pos_master/presentation/widgets/product_card.dart';
+import 'package:pos_master/core/responsive/responsive_helper.dart';
+import 'package:pos_master/theme.dart';
 
 class PosScreen extends ConsumerStatefulWidget {
   const PosScreen({super.key});

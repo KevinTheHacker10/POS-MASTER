@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:matcha_lovers_506/domain/entities/order_entity.dart';
-import 'package:matcha_lovers_506/domain/entities/product_entity.dart';
+import 'package:pos_master/domain/entities/order_entity.dart';
+import 'package:pos_master/domain/entities/product_entity.dart';
 
 /// Cart item with product and quantity
 class CartItem {

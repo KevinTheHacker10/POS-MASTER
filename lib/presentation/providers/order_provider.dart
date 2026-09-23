@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/data/repositories/order_repository.dart';
-import 'package:matcha_lovers_506/domain/entities/order_entity.dart';
-import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/data/repositories/order_repository.dart';
+import 'package:pos_master/domain/entities/order_entity.dart';
+import 'package:pos_master/presentation/providers/auth_provider.dart';
 
 /// Provider for OrderRepository
 final orderRepositoryProvider = Provider<OrderRepository>((ref) {

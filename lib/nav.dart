@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
-import 'package:matcha_lovers_506/presentation/providers/business_settings_provider.dart';
-import 'package:matcha_lovers_506/presentation/screens/admin_screen.dart';
-import 'package:matcha_lovers_506/presentation/screens/checkout_screen.dart';
-import 'package:matcha_lovers_506/presentation/screens/login_screen.dart';
-import 'package:matcha_lovers_506/presentation/screens/orders_screen.dart';
-import 'package:matcha_lovers_506/presentation/screens/pos_screen.dart';
-import 'package:matcha_lovers_506/presentation/screens/product_management_screen.dart';
-import 'package:matcha_lovers_506/presentation/screens/setup_screen.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/presentation/providers/auth_provider.dart';
+import 'package:pos_master/presentation/providers/business_settings_provider.dart';
+import 'package:pos_master/presentation/screens/admin_screen.dart';
+import 'package:pos_master/presentation/screens/checkout_screen.dart';
+import 'package:pos_master/presentation/screens/login_screen.dart';
+import 'package:pos_master/presentation/screens/orders_screen.dart';
+import 'package:pos_master/presentation/screens/pos_screen.dart';
+import 'package:pos_master/presentation/screens/product_management_screen.dart';
+import 'package:pos_master/presentation/screens/setup_screen.dart';
 
 /// GoRouter configuration with authentication
 class AppRouter {

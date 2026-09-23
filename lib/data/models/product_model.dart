@@ -1,5 +1,5 @@
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/domain/entities/product_entity.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/domain/entities/product_entity.dart';
 
 /// Product model - Data layer
 class ProductModel extends ProductEntity {

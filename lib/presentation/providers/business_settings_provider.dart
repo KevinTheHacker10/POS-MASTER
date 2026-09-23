@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:matcha_lovers_506/domain/entities/business_settings.dart';
-import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
+import 'package:pos_master/domain/entities/business_settings.dart';
+import 'package:pos_master/presentation/providers/auth_provider.dart';
 
 class BusinessSettingsNotifier extends Notifier<BusinessSettings> {
   static const _nameKey = 'business_name';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/nav.dart';
-import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
-import 'package:matcha_lovers_506/presentation/providers/business_settings_provider.dart';
-import 'package:matcha_lovers_506/theme.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/nav.dart';
+import 'package:pos_master/presentation/providers/auth_provider.dart';
+import 'package:pos_master/presentation/providers/business_settings_provider.dart';
+import 'package:pos_master/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Main entry point for POS-MASTER.

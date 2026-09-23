@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:matcha_lovers_506/domain/entities/product_entity.dart';
-import 'package:matcha_lovers_506/theme.dart';
+import 'package:pos_master/domain/entities/product_entity.dart';
+import 'package:pos_master/theme.dart';
 import 'package:intl/intl.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
+import 'package:pos_master/core/constants.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductEntity product;

@@ -23,6 +23,5 @@ flutter test
 flutter run
 ```
 
-El identificador interno del paquete Dart se conserva temporalmente como
-`matcha_lovers_506` para no romper importaciones ni instalaciones existentes;
-el nombre público del producto y de las aplicaciones es `POS-MASTER`.
+El paquete Dart, los ejecutables y los identificadores de aplicación usan la
+identidad `pos_master` / `com.posmaster.app`; el nombre público es `POS-MASTER`.

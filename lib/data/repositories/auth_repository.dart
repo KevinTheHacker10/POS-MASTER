@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/data/models/user_model.dart';
-import 'package:matcha_lovers_506/domain/entities/user_entity.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/data/models/user_model.dart';
+import 'package:pos_master/domain/entities/user_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 

@@ -1,5 +1,5 @@
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/domain/entities/user_entity.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/domain/entities/user_entity.dart';
 
 /// User model - Data layer
 class UserModel extends UserEntity {

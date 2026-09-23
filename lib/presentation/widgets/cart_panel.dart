@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/presentation/providers/cart_provider.dart';
-import 'package:matcha_lovers_506/presentation/widgets/product_card.dart';
-import 'package:matcha_lovers_506/theme.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/presentation/providers/cart_provider.dart';
+import 'package:pos_master/presentation/widgets/product_card.dart';
+import 'package:pos_master/theme.dart';
 
 class CartPanel extends ConsumerWidget {
   final List<CartItem> cartItems;

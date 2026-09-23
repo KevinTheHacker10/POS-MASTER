@@ -1,4 +1,4 @@
-import 'package:matcha_lovers_506/core/constants.dart';
+import 'package:pos_master/core/constants.dart';
 
 /// Order item entity
 class OrderItemEntity {

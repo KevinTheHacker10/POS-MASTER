@@ -1,5 +1,5 @@
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/domain/entities/order_entity.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/domain/entities/order_entity.dart';
 
 /// Order item model
 class OrderItemModel extends OrderItemEntity {

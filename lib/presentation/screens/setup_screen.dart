@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/domain/entities/business_settings.dart';
-import 'package:matcha_lovers_506/presentation/providers/business_settings_provider.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/domain/entities/business_settings.dart';
+import 'package:pos_master/presentation/providers/business_settings_provider.dart';
 
 class SetupScreen extends ConsumerStatefulWidget {
   final String destinationAfterSave;

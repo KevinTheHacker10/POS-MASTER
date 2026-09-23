@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/core/responsive/responsive_helper.dart';
-import 'package:matcha_lovers_506/domain/entities/order_entity.dart';
-import 'package:matcha_lovers_506/presentation/providers/order_provider.dart';
-import 'package:matcha_lovers_506/theme.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/core/responsive/responsive_helper.dart';
+import 'package:pos_master/domain/entities/order_entity.dart';
+import 'package:pos_master/presentation/providers/order_provider.dart';
+import 'package:pos_master/theme.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});

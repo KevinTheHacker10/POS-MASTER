@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/data/repositories/order_repository.dart';
-import 'package:matcha_lovers_506/domain/entities/business_settings.dart';
-import 'package:matcha_lovers_506/domain/entities/order_entity.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/data/repositories/order_repository.dart';
+import 'package:pos_master/domain/entities/business_settings.dart';
+import 'package:pos_master/domain/entities/order_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

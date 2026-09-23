@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matcha_lovers_506/core/constants.dart';
-import 'package:matcha_lovers_506/core/responsive/responsive_helper.dart';
-import 'package:matcha_lovers_506/presentation/providers/auth_provider.dart';
-import 'package:matcha_lovers_506/presentation/providers/business_settings_provider.dart';
-import 'package:matcha_lovers_506/theme.dart';
+import 'package:pos_master/core/constants.dart';
+import 'package:pos_master/core/responsive/responsive_helper.dart';
+import 'package:pos_master/presentation/providers/auth_provider.dart';
+import 'package:pos_master/presentation/providers/business_settings_provider.dart';
+import 'package:pos_master/theme.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
