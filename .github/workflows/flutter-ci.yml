@@ -72,7 +72,7 @@ jobs:
         include:
           - target: Android
             os: ubuntu-latest
-            command: flutter build apk --debug
+            command: flutter build apk --debug --verbose
           - target: Linux
             os: ubuntu-latest
             command: flutter build linux --release
