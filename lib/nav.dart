@@ -24,9 +24,10 @@ class AppRouter {
           final currentUser = ref.read(currentUserProvider);
           final isLoggingIn = state.matchedLocation == AppRoutes.login;
 
-          if (!settings.isConfigured &&
-              state.matchedLocation != AppRoutes.setup) {
-            return AppRoutes.setup;
+          if (!settings.isConfigured) {
+            return state.matchedLocation == AppRoutes.setup
+                ? null
+                : AppRoutes.setup;
           }
           if (settings.isConfigured &&
               state.matchedLocation == AppRoutes.setup) {
